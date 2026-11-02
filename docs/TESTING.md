@@ -6,6 +6,8 @@ Run `npm test` and `npm run check` from the repository root. The suite covers vi
 
 The scanner tests use simulated Chrome APIs. They do not make requests to Reddit or publish content.
 
+The collector tests cover supported search URLs, virtualized batches, case-insensitive deduplication, preservation of existing observations, stable-bottom termination, challenges, manual Stop and user navigation. A browser UI fixture also exercises the full Collect & check button flow through a simulated Chrome adapter, verifying that collected names transition into checked results. This fixture does not establish live Reddit lazy-loading compatibility.
+
 ## Browser inspection used for the first release
 
 The dashboard was rendered in an isolated headless Chrome profile at desktop width and at a 390 px viewport. A local Chrome API adapter supplied empty storage so the real UI module could add the public sample list. These views verify layout and local UI execution, not authenticated Reddit compatibility.

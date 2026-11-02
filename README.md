@@ -13,6 +13,7 @@ Made by [sunch0x](https://linkdeck.co/sunch0x), from the makers of [Unison](http
 ## What it does
 
 - Paste subreddit names or links, or import a plain-text list
+- **Collect & check**: scroll an open Reddit Communities search, collect names, then start checking
 - Inspect visible account-age / karma gates, approval requests, sign-in prompts and browser challenges
 - Reuse one checker-owned tab; no additional delay between completed checks
 - Pause, resume, retry uncertain results and make your own manual marks
@@ -32,6 +33,18 @@ This is an unpacked developer extension, not a Chrome Web Store listing.
 5. Click **Reddit Preflight** in Chrome's extensions menu
 
 Sign in to Reddit normally before starting. You do not enter your username or password in Preflight.
+
+## Collect & check
+
+1. Open a Reddit search and select the **Communities** results tab
+2. Click the extension icon while on that page, or select its tab under **From Reddit search**
+3. Click **Collect & check**
+
+Preflight reads community links from the results pane, scrolls it, deduplicates names and saves each batch locally. Once the loaded results stop growing at the bottom, it automatically checks pending communities. Existing observations are preserved, so already checked communities are not rechecked.
+
+The search tab stays open. The form checker uses its own reusable tab. Stop the operation with **Pause**; collected names remain in your list and the checks do not start after a manual stop. If search navigation changes, a challenge appears or collection stalls, it stops and keeps the partial list for review.
+
+This collects what Reddit loads for that specific search, not every subreddit on Reddit. Limits: 1,000 communities per list, a two-minute collection window, and a stop when the loaded results remain unchanged. After a partial collection, you can continue collecting from the same search or start checks yourself.
 
 ## Use it
 

@@ -8,6 +8,8 @@ When you start a check, the extension opens one reusable tab on `https://www.red
 
 It does not read password fields, input values, cookies, access tokens, private messages or arbitrary browsing history. It does not click Reddit controls, fill in a post, submit content, join communities, vote or message anyone.
 
+When you choose **Collect & check**, it also reads community links from the selected open Reddit Communities search and scrolls that results pane. Only eligible Reddit search tabs are offered in the selector. Clicking the extension icon on a Communities search remembers that tab ID in `chrome.storage.session` for the source picker. Collected names are stored locally as part of your list. The search tab is not closed or navigated by the collector.
+
 ## Account identity
 
 The extension uses Reddit as it is already signed in within the current Chrome profile. It does not implement a separate Reddit login or OAuth flow. A username is displayed only if the page exposes a unique explicit account-menu identifier. Otherwise it remains unidentified. A detected change between two known usernames pauses a scan, but unidentified accounts cannot be reliably compared. Recheck the list after changing accounts.

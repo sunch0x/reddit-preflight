@@ -14,6 +14,11 @@ export function parseCommunities(text){
  }
  return {names,invalid};
 }
+export function isCommunitySearchURL(value){try{const u=new URL(value);return u.origin==='https://www.reddit.com'&&/^\/search\/?$/.test(u.pathname)&&['communities','sr'].includes(u.searchParams.get('type'));}catch{return false;}}
+export function mergeCollected(rows,names){
+ const seen=new Set(rows.map(r=>r.name.toLowerCase()));let n=0;
+ for(const value of names){const name=normalizeCommunity(value);if(!name||seen.has(name.toLowerCase())||rows.length>=1000)continue;rows.push({name,status:'pending'});seen.add(name.toLowerCase());n++;}return n;
+}
 export function resolveAccount(snapshot){
  const names=[...new Set((snapshot.accountCandidates||[]).map(s=>String(s).match(/^\/?u\/([A-Za-z0-9_-]{3,30})\/?$/i)?.[1]).filter(Boolean))];
  return names.length===1?names[0]:'';
