@@ -17,7 +17,7 @@ function draw(){
  $('progress-fill').style.width=(total?checked/total*100:0)+'%';$('progress').setAttribute('aria-valuenow',String(checked));$('progress').setAttribute('aria-valuemax',String(total));
  $('start').disabled=running||!state.rows.some(r=>r.status==='pending');$('pause').hidden=!running;$('start').hidden=running;
  $('start-label').textContent=checked?'Continue checking':'Start checking';
- for(const id of ['add','sample','import-list','retry','recheck','restore','clear','collect','refresh-source','source-tab'])$(id).disabled=running;
+ for(const id of ['add','sample','import-list','retry','recheck','restore','clear','collect','refresh-source','source-tab','manage-list'])$(id).disabled=running;
  $('collect-label').textContent=collecting?'Collecting…':'Collect & check';
  $('foreground').disabled=running;for(const id of ['export','csv','backup'])$(id).disabled=!total;
  $('view').hidden=!state.workerTabId;$('close').hidden=running||!state.workerTabId;
@@ -38,7 +38,7 @@ async function confirmAction(title,description,action){
 function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 async function addList(text){
  const {names,invalid}=parseCommunities(text);let added=0;for(const name of names){if(state.rows.length>=1000)break;if(state.rows.some(r=>r.name.toLowerCase()===name.toLowerCase()))continue;state.rows.push({name,status:'pending'});added++;}
- await save();changed();$('input-message').textContent=added+' added'+(invalid.length?' / '+invalid.length+' invalid entries skipped':' / duplicates skipped')+(state.rows.length>=1000?' / list limit: 1,000':'');
+ await save();changed();$('input-message').textContent=added+' added'+(invalid.length?' / '+invalid.length+' invalid entries skipped':'')+(state.rows.length>=1000?' / list limit: 1,000':'');
  if(added){$('community-input').value='';say('Ready to check');}
 }
 async function start(){
@@ -89,6 +89,10 @@ async function init(){
  for(const [value,label] of Object.entries(LABELS)){const o=document.createElement('option');o.value=value;o.textContent=label;$('filter').append(o);}
  if(otherRunning){draw();for(const button of document.querySelectorAll('button,input[type="file"]'))button.disabled=true;say('A check is running in another Preflight window. Use that window, or reload this one after it stops.');return;}
  await save();draw();if(state.rows.length)say('Your list is saved. Continue checking or export the report.');
+ $('manage-list').onclick=()=>$('list-dialog').showModal();
+ $('close-list-dialog').onclick=()=>$('list-dialog').close();
+ $('list-dialog').addEventListener('click',ev=>{if(ev.target.closest('#retry,#recheck,#backup,#clear'))$('list-dialog').close();});
+ $('restore').addEventListener('change',()=>$('list-dialog').close());
  $('add').onclick=()=>addList($('community-input').value).catch(err=>say(err.message));
  $('sample').onclick=()=>addList('socialmedia\ncontent_marketing\ncreators\nSocialMediaMarketing\nSaaS');
  $('start').onclick=()=>start().catch(err=>say('Could not start: '+err.message));

@@ -31,3 +31,6 @@ Do not submit test content to prove eligibility. Hidden requirements and submiss
 
 ## Custom menus (0.2.3)
 Local Chromium DOM fixture verified filter selection, source-tab selection, Escape returning focus, disabled-state synchronization and 390px layout without horizontal overflow. This fixture does not validate authenticated Reddit behavior.
+
+## Layout cleanup (0.3.3)
+Local Chromium verified the Manage list dialog opens and closes, no footer or hero divider remains, and 105 rendered rows grow the page rather than creating a vertical table scroll area. The 390px viewport has no horizontal page overflow. Existing select interaction checks still pass.
