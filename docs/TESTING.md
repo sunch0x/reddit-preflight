@@ -28,3 +28,6 @@ These checks must be performed in an ordinary Chrome profile with the unpacked e
 8. If the account changes, recheck all results instead of combining reports
 
 Do not submit test content to prove eligibility. Hidden requirements and submission-time checks remain outside the tool's scope.
+
+## Custom menus (0.2.3)
+Local Chromium DOM fixture verified filter selection, source-tab selection, Escape returning focus, disabled-state synchronization and 390px layout without horizontal overflow. This fixture does not validate authenticated Reddit behavior.

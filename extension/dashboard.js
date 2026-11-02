@@ -1,3 +1,4 @@
+import {enhanceSelects} from './select-menu.js';
 import {LABELS,REASONS,escapeHTML as e,parseCommunities,exportCSV,exportHTML,validateBackup,isCommunitySearchURL,mergeCollected} from './core.js';
 import {collectSnapshot} from './snapshot.js';import {Scanner} from './scanner.js';
 import {Collector} from './collector.js';import {readSearchPage} from './search-page.js';
@@ -77,6 +78,7 @@ async function collectAndCheck(){
  });
 }
 async function init(){
+ enhanceSelects();
  const locks=await navigator.locks.query();
  const otherRunning=locks.held.some(lock=>lock.name==='reddit-preflight-runner');
  const stored=(await chrome.storage.local.get(KEY))[KEY];
