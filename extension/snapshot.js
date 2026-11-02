@@ -29,5 +29,6 @@ export function collectSnapshot(){
    for(const link of root.querySelectorAll('a[href]')){const match=(link.getAttribute('href')||'').match(/^(?:https:\/\/www\.reddit\.com)?\/(?:user|u)\/([A-Za-z0-9_-]{3,30})\/?$/);if(match)accountCandidates.push('u/'+match[1]);}
   }
  }
- return {url:location.href,text,gateText,titleField,editor,authDialog,challenge,accountCandidates};
+ const mediaRequirement=shown.filter(el=>!el.closest('aside')&&el.children.length<3).map(readable).find(t=>t.length<240&&/^This community requires you to add an image, video, or link[.!]?$/i.test(t))||'';
+ return {url:location.href,text,gateText,titleField,editor,authDialog,challenge,accountCandidates,mediaRequirement};
 }

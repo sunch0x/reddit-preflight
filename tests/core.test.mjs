@@ -51,3 +51,13 @@ test('backup validation rejects duplicates and unknown states, strips runtime ta
  assert.throws(()=>validateBackup({schema:2,rows:[{name:'Example',status:'pending'},{name:'example',status:'pending'}]}));
  const r=validateBackup({schema:2,rows:[{name:'example',status:'pending'}],workerTabId:99});assert.equal(r.workerTabId,null);
 });
+
+test('media-only composer reports a content requirement, not an account block',()=>{
+ const r=classify(s({titleField:true,mediaRequirement:'This community requires you to add an image, video, or link'}));
+ assert.equal(r.status,'form_open');assert.equal(r.reason,'media');assert.match(r.evidence,/image, video, or link/);
+});
+test('media requirement alone or on the wrong page cannot prove an open composer',()=>{
+ assert.equal(classify(s({mediaRequirement:'This community requires you to add an image, video, or link'})).status,'unknown');
+ assert.equal(classify(s({url:'https://www.reddit.com/',titleField:true,mediaRequirement:'This community requires you to add an image, video, or link'})).status,'unknown');
+});
+test('account restrictions still override a media requirement',()=>assert.equal(classify(s({titleField:true,mediaRequirement:'This community requires you to add an image, video, or link',gateText:"You cannot contribute in this community yet. Your account is not old enough"})).status,'blocked'));

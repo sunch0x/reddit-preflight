@@ -8,7 +8,7 @@ A small, local Chrome extension that visits your community list in one reusable 
 
 Dashboard with an example community list, before a scan. No sample eligibility results are prefilled.
 
-Made by [sunch0x](https://linkdeck.co/sunch0x), from the makers of [Unison](https://unison.ink).
+An independent tool by [sunch0x](https://linkdeck.co/sunch0x).
 
 ## What it does
 
@@ -103,4 +103,4 @@ The extension starts with an empty list. The optional sample list contains only 
 
 See [PRIVACY.md](PRIVACY.md). Runtime code and assets are local; no results are uploaded. Creator and product links are regular links, not trackers.
 
-MIT licensed. Reddit and Unison names refer to their respective owners. This project is not affiliated with or endorsed by Reddit. The Unison application is a separate product and is not included in this repository.
+MIT licensed. This independent project is not affiliated with or endorsed by Reddit.

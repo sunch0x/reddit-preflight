@@ -22,7 +22,7 @@ CSV, HTML reports and JSON backups are written only when you choose an export. T
 
 ## Network activity
 
-The extension itself does not send scan results to a server. Opening Reddit pages makes normal requests to Reddit, which are subject to Reddit's own policies. Creator, Unison and GitHub links open only when clicked and are ordinary external websites with their own policies.
+The extension itself does not send scan results to a server. Opening Reddit pages makes normal requests to Reddit, which are subject to Reddit's own policies. Creator and GitHub links open only when clicked and are ordinary external websites with their own policies.
 
 ## Deletion and permissions
 
