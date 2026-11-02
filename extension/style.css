@@ -30,3 +30,5 @@ body{background:#111113}#ambient-world{position:fixed;inset:0;width:100%;height:
 @media(prefers-reduced-motion:reduce){.creator-emblem,.results,.intro-copy,.select-options{animation:none!important}.button:hover,.button:active,.project-links a:hover{transform:none!important}}
 
 .creator-emblem{left:24px;width:108px;height:120px}@media(max-width:1200px){.creator-emblem{left:15px;width:62px;height:74px}}@media(max-width:900px){.creator-emblem{left:12px;width:46px;height:57px}}@media(max-width:760px){.creator-emblem{left:8px;width:30px;height:39px}}
+
+.creator-emblem{left:28px;width:80px;height:90px}@media(max-width:1200px){.creator-emblem{left:19px;width:46px;height:55px}}@media(max-width:900px){.creator-emblem{left:16px;width:34px;height:43px}}@media(max-width:760px){.creator-emblem{left:11px;width:23px;height:30px}}
