@@ -1,4 +1,4 @@
-import {EclipseMotion,cloudPass} from './eclipse-motion.js';
+import {EclipseMotion} from './eclipse-motion.js';
 // Low-resolution procedural pixel scenery. One capped loop, no WebGL or external assets.
 export function startAmbient(){
  const canvas=document.getElementById('ambient-world');if(!canvas)return;
@@ -61,7 +61,6 @@ export function startAmbient(){
   ctx.closePath();ctx.fill();
   disc(x,y,r,'#d3453a');disc(x,y,r-1,'#a83236');
   ctx.save();ctx.beginPath();ctx.arc(x,y,r-1,0,Math.PI*2);ctx.clip();
-  disc(x-3,y+2,r*.55,'#92303a');disc(x+5,y-3,r*.3,'#9c3337');disc(x-2,y-5,r*.2,'#ad3d3c');
   disc(x+state.open*r*2.15,y-state.open*r*.18,r-3,'#08090b');
   if(state.busy&&state.open>.85){ctx.globalAlpha=.14;rect(x-r+state.progress*r*5,y-r,1,r*2,'#ffe0a0');ctx.globalAlpha=1;}
   ctx.restore();
@@ -87,14 +86,6 @@ export function startAmbient(){
    ctx.globalAlpha=state.scan*.55;
    for(let i=0;i<4;i++){const a=i*1.7+.3,drift=(t*.7+i*.37)%1,rr=r+5+drift*9;rect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,1,1,'#bb654d');}
    ctx.globalAlpha=1;
-  }
-  // Occasional cloud crossings; the eclipse stays unobstructed most of the time.
-  for(let layer=0;layer<2;layer++){
-   const pass=cloudPass(t,layer,motion.matches);if(!pass)continue;
-   const drift=pass.drift*r,cy=y+(layer? r*.58:-r*.2);
-   ctx.globalAlpha=(layer?.72:.66)*pass.alpha*(1-state.open);ctx.fillStyle=layer?'#151217':'#1a1219';ctx.beginPath();
-   const points=[[-2.4,0],[-1.4,-.1],[-.9,-.25],[-.35,-.12],[.1,-.28],[.65,-.05],[1,-.2],[1.7,-.08],[2.4,-.16],[2.4,.1],[1.5,.1],[.8,.25],[.15,.1],[-.7,.23],[-1.5,.1],[-2.4,.12]];
-   points.forEach(([px,py],i)=>{const xx=Math.round(x+px*r+drift),yy=Math.round(cy+py*r);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.closePath();ctx.fill();
   }
   ctx.globalAlpha=1;
  }

@@ -46,3 +46,6 @@ Two state tests verify scan intensity approaches active/inactive levels and redu
 
 ## Layered scenery (0.5.4)
 Local browser instrumentation verified pointer-driven mountain translations remain under five CSS pixels and become zero at mobile width. Reduced-motion static drawing and existing eclipse/menu/scroll checks still pass.
+
+## Functional recheck (0.5.5)
+40 unit tests pass after removing cloud-overlay timing. Local Chromium rechecked actual scanner activity transitions, the collect-to-scan sequence with two simulated search results, menu selection, keyboard dismissal, list dialog, 105-row expansion, SVG alignment at 100%/150%, 390px layout, fixed emblem placement, and static reduced-motion interaction. These are local fixtures; live authenticated Reddit is not verified.

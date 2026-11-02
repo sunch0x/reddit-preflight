@@ -20,12 +20,3 @@ export class EclipseMotion{
   return {scan:this.scan,open:elapsed<700?smooth(elapsed/700):elapsed<1200?1:1-smooth((elapsed-1200)/1400),hover:this.hover,burst:elapsed>=500&&elapsed<1800?(elapsed-500)/1300:0,progress:elapsed/2600,busy:true};
  }
 }
-
-// Two brief passes in a 36-second cycle, with a long unobstructed interval.
-export function cloudPass(seconds,layer,reduced){
- if(reduced)return null;
- const elapsed=((seconds%36)+36)%36-12-layer*1.2,duration=layer?5.6:6;
- if(elapsed<=0||elapsed>=duration)return null;
- const p=elapsed/duration;
- return {drift:-4.3+p*8.6,alpha:smooth(p/.12)*smooth((1-p)/.12)};
-}

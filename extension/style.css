@@ -36,3 +36,5 @@ body{background:#111113}#ambient-world{position:fixed;inset:0;width:100%;height:
 .eclipse-trigger{position:fixed;z-index:3;display:block;border:0;border-radius:50%;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}.eclipse-trigger:focus-visible{outline:1px solid #c96d5c;outline-offset:3px}.eclipse-trigger:disabled{opacity:1;cursor:default}
 
 .select-chevron,.select-check{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:0 0 16px;line-height:1}.select-chevron svg,.select-check svg{display:block;width:16px;height:16px;stroke-width:2;fill:none}.select-chevron{transition:transform .2s var(--ease)}.select-trigger[aria-expanded="true"] .select-chevron{transform:rotate(180deg)}.select-trigger{gap:12px;line-height:1.4}
+
+.creator-emblem{pointer-events:auto;border-radius:5px}.creator-emblem img{transition:filter .25s var(--ease)}.creator-emblem:hover img{filter:drop-shadow(0 10px 18px #0005) brightness(1.13)}.creator-emblem:focus-visible{outline:1px solid #c87563;outline-offset:4px}
