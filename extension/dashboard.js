@@ -1,3 +1,4 @@
+import {startAmbient} from './ambient.js';
 import {enhanceSelects} from './select-menu.js';
 import {LABELS,REASONS,escapeHTML as e,parseCommunities,exportCSV,exportHTML,validateBackup,isCommunitySearchURL,mergeCollected} from './core.js';
 import {collectSnapshot} from './snapshot.js';import {Scanner} from './scanner.js';
@@ -131,4 +132,5 @@ async function init(){
  await refreshSources().catch(()=>{$('collect-message').textContent='Open a Reddit Communities search, then click Refresh tabs';});
 }
 window.addEventListener('beforeunload',()=>{scanner?.pause();collector?.pause();});
+startAmbient();
 init().catch(err=>say('Could not open Preflight: '+err.message));

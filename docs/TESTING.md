@@ -34,3 +34,6 @@ Local Chromium DOM fixture verified filter selection, source-tab selection, Esca
 
 ## Layout cleanup (0.3.3)
 Local Chromium verified the Manage list dialog opens and closes, no footer or hero divider remains, and 105 rendered rows grow the page rather than creating a vertical table scroll area. The 390px viewport has no horizontal page overflow. Existing select interaction checks still pass.
+
+## Ambient world (0.4.0)
+Browser fixture verifies the fixed emblem does not move during scroll or overlap the content rail, canvas is bounded to one third viewport resolution, and prefers-reduced-motion produces zero canvas draws during a subsequent observation window and no emblem CSS animation.
