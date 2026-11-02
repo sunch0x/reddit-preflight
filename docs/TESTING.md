@@ -43,3 +43,6 @@ Four state-machine tests cover a complete bounded cycle, repeat-click rejection,
 
 ## Scan-reactive corona (0.5.1)
 Two state tests verify scan intensity approaches active/inactive levels and reduced motion uses immediate static changes. Local Chromium starts the real scanner against simulated Chrome/Reddit responses, observes activity true then false, checks five completed results, and verifies the eclipse returns to idle scan intensity. This is local integration evidence, not live authenticated Reddit verification.
+
+## Layered scenery (0.5.4)
+Local browser instrumentation verified pointer-driven mountain translations remain under five CSS pixels and become zero at mobile width. Reduced-motion static drawing and existing eclipse/menu/scroll checks still pass.
