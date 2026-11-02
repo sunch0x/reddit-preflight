@@ -25,7 +25,7 @@ export function startAmbient(){
   const halo=ctx.createRadialGradient(x,y,r*.8,x,y,r*2.3);
   halo.addColorStop(0,'#ac292b32');halo.addColorStop(.5,'#8f20231c');halo.addColorStop(1,'#11111300');
   ctx.fillStyle=halo;ctx.fillRect(x-r*3,y-r*3,r*6,r*6);
-  disc(x,y,r+2,'#442028');disc(x,y,r+1,'#8b2e35');disc(x,y,r,'#c3433c');disc(x,y,r-1,'#a32d34');disc(x,y,r-3,'#6a1d29');disc(x-1,y-2,r*.53,'#130b12');
+  disc(x,y,r+3,'#482026');disc(x,y,r+1,'#a43135');disc(x,y,r,'#eb5140');disc(x,y,r-1,'#bc3435');disc(x,y,r-3,'#08090b');
   // Quiet uneven corona, with only a slight breathing change in intensity.
   ctx.globalAlpha=.35+Math.sin(t*.55)*.05;
   for(let i=0;i<14;i++){
