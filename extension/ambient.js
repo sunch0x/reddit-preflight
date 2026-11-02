@@ -25,9 +25,17 @@ export function startAmbient(){
  }
  function eclipse(t,state){
   const {r,x,y}=geometry();
-  const halo=ctx.createRadialGradient(x,y,r*.8,x,y,r*2.3);
-  halo.addColorStop(0,`rgba(172,41,43,${.2+state.hover*.12+state.open*.1})`);halo.addColorStop(.5,'#8f20231c');halo.addColorStop(1,'#11111300');
+  const halo=ctx.createRadialGradient(x,y,r*.8,x,y,r*2.8);
+  halo.addColorStop(0,`rgba(172,41,43,${.18+state.hover*.12+state.open*.1+state.scan*.18})`);halo.addColorStop(.45,`rgba(115,32,37,${.11+state.scan*.08})`);halo.addColorStop(1,'#11111300');
   ctx.fillStyle=halo;ctx.fillRect(x-r*3,y-r*3,r*6,r*6);
+  // Fixed asymmetric flares, not a rotating or continuously pulsing ring.
+  ctx.fillStyle=state.scan>.2?'#743136':'#50252c';ctx.beginPath();
+  for(let i=0;i<=72;i++){
+   const a=i*Math.PI*2/72,peak=Math.max(0,Math.sin(a*5+.8))**10*3+Math.max(0,Math.cos(a*3-1))**18*2;
+   const rr=r+2+peak*(.65+state.scan*.5+state.hover*.2),px=Math.round(x+Math.cos(a)*rr),py=Math.round(y+Math.sin(a)*rr);
+   if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  }
+  ctx.closePath();ctx.fill();
   disc(x,y,r+3,'#482026');disc(x,y,r+1,'#a43135');disc(x,y,r,'#eb5140');disc(x,y,r-1,'#bc3435');
   ctx.save();ctx.beginPath();ctx.arc(x,y,r-1,0,Math.PI*2);ctx.clip();
   disc(x-3,y+2,r*.55,'#92303a');disc(x+5,y-3,r*.3,'#9c3337');disc(x-2,y-5,r*.2,'#ad3d3c');
@@ -45,11 +53,24 @@ export function startAmbient(){
    for(let i=0;i<12;i++){const a=i*Math.PI/6+.15,rr=r+4+state.burst*15;rect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,1,i%3?1:2,'#db8558');}
    ctx.globalAlpha=1;
   }
-  // Quiet uneven corona, with only a slight breathing change in intensity.
-  ctx.globalAlpha=.35+Math.sin(t*.55)*.05;
+  ctx.globalAlpha=.28+state.scan*.32+state.hover*.15;
   for(let i=0;i<14;i++){
    const a=i*Math.PI*2/14,rr=r+1;
-   rect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,1,i%3===0?3:1,'#f4774d');
+   const length=[1,3,1,2,5,1,2,1,4,1,2,3,1,2][i];
+   for(let step=0;step<length;step++)rect(x+Math.cos(a)*(rr+step),y+Math.sin(a)*(rr+step),1,1,step===0?'#f2a26c':'#b84c40');
+  }
+  ctx.globalAlpha=1;
+  if(state.scan>.15){
+   ctx.globalAlpha=state.scan*.55;
+   for(let i=0;i<4;i++){const a=i*1.7+.3,drift=(t*.7+i*.37)%1,rr=r+5+drift*9;rect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,1,1,'#bb654d');}
+   ctx.globalAlpha=1;
+  }
+  // Two sparse cloud silhouettes cross the rim and tie the eclipse into the sky.
+  for(let layer=0;layer<2;layer++){
+   const drift=motion.matches?0:Math.sin(t*.025+layer)*r*.12,cy=y+(layer? r*.58:-r*.2);
+   ctx.globalAlpha=layer?.72:.66;ctx.fillStyle=layer?'#151217':'#1a1219';ctx.beginPath();
+   const points=[[-2.4,0],[-1.4,-.1],[-.9,-.25],[-.35,-.12],[.1,-.28],[.65,-.05],[1,-.2],[1.7,-.08],[2.4,-.16],[2.4,.1],[1.5,.1],[.8,.25],[.15,.1],[-.7,.23],[-1.5,.1],[-2.4,.12]];
+   points.forEach(([px,py],i)=>{const xx=Math.round(x+px*r+drift),yy=Math.round(cy+py*r);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.closePath();ctx.fill();
   }
   ctx.globalAlpha=1;
  }
@@ -85,7 +106,7 @@ export function startAmbient(){
  }
  function draw(now){
   const t=motion.matches?0:(now-origin)/1000,state=effect.sample(now,motion.matches);
-  if(trigger){trigger.setAttribute('aria-busy',String(state.busy));trigger.dataset.phase=state.busy?'revealing':'idle';trigger.setAttribute('aria-label',motion.matches&&state.open?'Restore eclipse':'Reveal the crimson moon');}
+  if(trigger){trigger.setAttribute('aria-busy',String(state.busy));trigger.dataset.phase=state.busy?'revealing':'idle';trigger.dataset.scanning=effect.scanTarget?'true':'false';trigger.setAttribute('aria-label',motion.matches&&state.open?'Restore eclipse':'Reveal the crimson moon');}
   rect(0,0,width,height,'#111113');
   eclipse(t,state);
   ridge(height*.64,1.3,'#17161a');ridge(height*.81,3.1,'#1a171d');ridge(height*.95,5.1,'#1d191f');
@@ -116,6 +137,7 @@ export function startAmbient(){
  trigger?.addEventListener('blur',()=>{effect.setHovered(false);if(motion.matches)refresh();});
  trigger?.addEventListener('pointermove',ev=>{const b=trigger.getBoundingClientRect();lightAngle=Math.atan2(ev.clientY-b.y-b.height/2,ev.clientX-b.x-b.width/2);});
  trigger?.addEventListener('click',()=>{if(effect.activate(performance.now(),motion.matches))refresh();});
+ document.addEventListener('preflight:activity',ev=>{effect.setScanning(Boolean(ev.detail?.running));if(motion.matches)refresh();});
  document.addEventListener('scroll',updateHitArea,{passive:true});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)effect.reset();updateHitArea();refresh();});
  motion.addEventListener('change',()=>{effect.reset();refresh();});

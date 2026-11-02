@@ -15,3 +15,15 @@ test('reduced motion uses a static click toggle without particles or a timer',()
 test('reset discards an interrupted effect and hover state',()=>{
  const m=new EclipseMotion();m.setHovered(true);m.activate(0,false);m.sample(600,false);m.reset();assert.equal(m.sample(700,false).open,0);assert.equal(m.sample(700,false).hover,0);assert.equal(m.sample(700,false).busy,false);
 });
+
+test('scan intensity follows actual activity and settles after it stops',()=>{
+ const m=new EclipseMotion();m.sample(0,false);m.setScanning(true);
+ const first=m.sample(100,false).scan;assert.ok(first>0&&first<1);
+ for(let t=200;t<=2000;t+=100)m.sample(t,false);
+ assert.ok(m.sample(2100,false).scan>.98);m.setScanning(false);
+ for(let t=2200;t<=5000;t+=100)m.sample(t,false);
+ assert.ok(m.sample(5100,false).scan<.01);
+});
+test('reduced-motion scan state changes immediately without starting a reveal',()=>{
+ const m=new EclipseMotion();m.setScanning(true);assert.equal(m.sample(0,true).scan,1);assert.equal(m.sample(0,true).busy,false);m.setScanning(false);assert.equal(m.sample(10,true).scan,0);
+});

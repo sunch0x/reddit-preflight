@@ -40,3 +40,6 @@ Browser fixture verifies the fixed emblem does not move during scroll or overlap
 
 ## Eclipse interaction (0.5.0)
 Four state-machine tests cover a complete bounded cycle, repeat-click rejection, static reduced-motion toggles and reset. Local Chromium exercises a real pointer click and restoration, plus static reduced-motion behavior.
+
+## Scan-reactive corona (0.5.1)
+Two state tests verify scan intensity approaches active/inactive levels and reduced motion uses immediate static changes. Local Chromium starts the real scanner against simulated Chrome/Reddit responses, observes activity true then false, checks five completed results, and verifies the eclipse returns to idle scan intensity. This is local integration evidence, not live authenticated Reddit verification.

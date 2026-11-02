@@ -4,7 +4,7 @@ import {LABELS,REASONS,escapeHTML as e,parseCommunities,exportCSV,exportHTML,val
 import {collectSnapshot} from './snapshot.js';import {Scanner} from './scanner.js';
 import {Collector} from './collector.js';import {readSearchPage} from './search-page.js';
 const $=id=>document.getElementById(id),KEY='reddit-preflight-v2';
-let state,scanner,collector,collecting=false,collectionCancelled=false,version=0,lastTable='',menu='',lastCounts={};
+let state,scanner,collector,collecting=false,collectionCancelled=false,version=0,lastTable='',menu='',lastCounts={},lastActivity=null;
 const say=s=>{$('message').textContent=s;};
 const save=()=>chrome.storage.local.set({[KEY]:state});
 const changed=()=>{version++;draw();};
@@ -13,6 +13,7 @@ function count(id,value,markup){
 }
 function draw(){
  const running=scanner?.running||collecting,total=state.rows.length,checked=state.rows.filter(r=>!['pending','checking'].includes(r.status)).length;
+ if(lastActivity!==Boolean(running)){lastActivity=Boolean(running);document.dispatchEvent(new CustomEvent('preflight:activity',{detail:{running:lastActivity}}));}
  const opened=state.rows.filter(r=>r.status==='form_open').length,blocked=state.rows.filter(r=>['blocked','restricted','unavailable','manual_bad'].includes(r.status)).length,review=state.rows.filter(r=>['unknown','login','challenge','rate_limit','session_changed'].includes(r.status)).length;
  count('checked-count',checked+'/'+total,checked+' <small>/ '+total+'</small>');count('open-count',opened);count('blocked-count',blocked);count('review-count',review);
  $('progress-fill').style.width=(total?checked/total*100:0)+'%';$('progress').setAttribute('aria-valuenow',String(checked));$('progress').setAttribute('aria-valuemax',String(total));
