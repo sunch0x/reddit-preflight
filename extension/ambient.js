@@ -1,4 +1,4 @@
-import {EclipseMotion} from './eclipse-motion.js';
+import {EclipseMotion,cloudPass} from './eclipse-motion.js';
 // Low-resolution procedural pixel scenery. One capped loop, no WebGL or external assets.
 export function startAmbient(){
  const canvas=document.getElementById('ambient-world');if(!canvas)return;
@@ -65,10 +65,11 @@ export function startAmbient(){
    for(let i=0;i<4;i++){const a=i*1.7+.3,drift=(t*.7+i*.37)%1,rr=r+5+drift*9;rect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,1,1,'#bb654d');}
    ctx.globalAlpha=1;
   }
-  // Two sparse cloud silhouettes cross the rim and tie the eclipse into the sky.
+  // Occasional cloud crossings; the eclipse stays unobstructed most of the time.
   for(let layer=0;layer<2;layer++){
-   const drift=motion.matches?0:Math.sin(t*.025+layer)*r*.12,cy=y+(layer? r*.58:-r*.2);
-   ctx.globalAlpha=layer?.72:.66;ctx.fillStyle=layer?'#151217':'#1a1219';ctx.beginPath();
+   const pass=cloudPass(t,layer,motion.matches);if(!pass)continue;
+   const drift=pass.drift*r,cy=y+(layer? r*.58:-r*.2);
+   ctx.globalAlpha=(layer?.72:.66)*pass.alpha*(1-state.open);ctx.fillStyle=layer?'#151217':'#1a1219';ctx.beginPath();
    const points=[[-2.4,0],[-1.4,-.1],[-.9,-.25],[-.35,-.12],[.1,-.28],[.65,-.05],[1,-.2],[1.7,-.08],[2.4,-.16],[2.4,.1],[1.5,.1],[.8,.25],[.15,.1],[-.7,.23],[-1.5,.1],[-2.4,.12]];
    points.forEach(([px,py],i)=>{const xx=Math.round(x+px*r+drift),yy=Math.round(cy+py*r);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.closePath();ctx.fill();
   }
