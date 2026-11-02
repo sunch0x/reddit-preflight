@@ -39,7 +39,7 @@ function download(name,body,type){const url=URL.createObjectURL(new Blob([body],
 async function addList(text){
  const {names,invalid}=parseCommunities(text);let added=0;for(const name of names){if(state.rows.length>=1000)break;if(state.rows.some(r=>r.name.toLowerCase()===name.toLowerCase()))continue;state.rows.push({name,status:'pending'});added++;}
  await save();changed();$('input-message').textContent=added+' added'+(invalid.length?' / '+invalid.length+' invalid entries skipped':' / duplicates skipped')+(state.rows.length>=1000?' / list limit: 1,000':'');
- if(added){$('community-input').value='';say('Ready when you are. No extra sign-in or pacing delay.');}
+ if(added){$('community-input').value='';say('Ready to check');}
 }
 async function start(){
  if(scanner.running||collecting)return;
