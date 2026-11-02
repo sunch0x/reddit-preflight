@@ -1,8 +1,11 @@
+import {EclipseMotion} from './eclipse-motion.js';
 // Low-resolution procedural pixel scenery. One capped loop, no WebGL or external assets.
 export function startAmbient(){
  const canvas=document.getElementById('ambient-world');if(!canvas)return;
  const ctx=canvas.getContext('2d',{alpha:false}),motion=matchMedia('(prefers-reduced-motion: reduce)');
- let width=0,height=0,frame=0,last=0,origin=performance.now();
+ let width=0,height=0,frame=0,last=0,origin=performance.now(),lightAngle=-Math.PI/3;
+ const effect=new EclipseMotion(),trigger=document.getElementById('eclipse-trigger');
+ const geometry=()=>{const r=width<250?8:14;return {r,x:width-r-9,y:r+9};};
  const particles=Array.from({length:22},(_,i)=>({x:((i*71+13)%997)/997,y:((i*137+83)%991)/991,speed:.4+(i%5)*.12,phase:i*2.399}));
  const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
  function ridge(base,seed,color){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(0,height);for(let x=0;x<=width+8;x+=8){const y=base+Math.sin(x*.025+seed)*14+Math.sin(x*.061+seed)*5;ctx.lineTo(x,Math.round(y/3)*3);}ctx.lineTo(width,height);ctx.closePath();ctx.fill();}
@@ -20,12 +23,28 @@ export function startAmbient(){
    const half=Math.floor(Math.sqrt(Math.max(0,r*r-yy*yy)));rect(x-half,y+yy,half*2+1,1,color);
   }
  }
- function eclipse(t){
-  const r=width<250?8:14,x=width-r-9,y=r+9;
+ function eclipse(t,state){
+  const {r,x,y}=geometry();
   const halo=ctx.createRadialGradient(x,y,r*.8,x,y,r*2.3);
-  halo.addColorStop(0,'#ac292b32');halo.addColorStop(.5,'#8f20231c');halo.addColorStop(1,'#11111300');
+  halo.addColorStop(0,`rgba(172,41,43,${.2+state.hover*.12+state.open*.1})`);halo.addColorStop(.5,'#8f20231c');halo.addColorStop(1,'#11111300');
   ctx.fillStyle=halo;ctx.fillRect(x-r*3,y-r*3,r*6,r*6);
-  disc(x,y,r+3,'#482026');disc(x,y,r+1,'#a43135');disc(x,y,r,'#eb5140');disc(x,y,r-1,'#bc3435');disc(x,y,r-3,'#08090b');
+  disc(x,y,r+3,'#482026');disc(x,y,r+1,'#a43135');disc(x,y,r,'#eb5140');disc(x,y,r-1,'#bc3435');
+  ctx.save();ctx.beginPath();ctx.arc(x,y,r-1,0,Math.PI*2);ctx.clip();
+  disc(x-3,y+2,r*.55,'#92303a');disc(x+5,y-3,r*.3,'#9c3337');disc(x-2,y-5,r*.2,'#ad3d3c');
+  disc(x+state.open*r*2.15,y-state.open*r*.18,r-3,'#08090b');
+  if(state.busy&&state.open>.85){ctx.globalAlpha=.14;rect(x-r+state.progress*r*5,y-r,1,r*2,'#ffe0a0');ctx.globalAlpha=1;}
+  ctx.restore();
+  if(state.hover>.01){
+   ctx.globalAlpha=state.hover*.7;
+   for(let i=-3;i<=3;i++){const a=lightAngle+i*.11;rect(x+Math.cos(a)*r,y+Math.sin(a)*r,1,1,'#ffb272');}
+   for(let i=0;i<3;i++){const a=t*.32+i*2.094;rect(x+Math.cos(a)*(r+6),y+Math.sin(a)*(r+6),1,1,'#bb6046');}
+   ctx.globalAlpha=1;
+  }
+  if(state.burst>0){
+   ctx.globalAlpha=(1-state.burst)*.8;
+   for(let i=0;i<12;i++){const a=i*Math.PI/6+.15,rr=r+4+state.burst*15;rect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,1,i%3?1:2,'#db8558');}
+   ctx.globalAlpha=1;
+  }
   // Quiet uneven corona, with only a slight breathing change in intensity.
   ctx.globalAlpha=.35+Math.sin(t*.55)*.05;
   for(let i=0;i<14;i++){
@@ -34,20 +53,20 @@ export function startAmbient(){
   }
   ctx.globalAlpha=1;
  }
- function lantern(x,y,t,phase){
+ function lantern(x,y,t,phase,open){
   rect(x,y-10,1,11,'#292029');rect(x-3,y-10,7,1,'#35252c');
-  ctx.globalAlpha=.55+Math.sin(t*.45+phase)*.06;
+  ctx.globalAlpha=.55+Math.sin(t*.45+phase)*.06+open*.35;
   rect(x-1,y-8,3,4,'#81342e');rect(x,y-7,1,2,'#b15b40');ctx.globalAlpha=1;
  }
  function gate(x,y){
   rect(x-8,y-14,17,2,'#30252b');rect(x-10,y-16,21,2,'#3a292d');
   rect(x-6,y-12,2,12,'#2c232a');rect(x+5,y-12,2,12,'#2c232a');rect(x-7,y-10,16,1,'#3b292e');
  }
- function valley(t){
+ function valley(t,open){
   // Sparse midground details stay to the right, outside the emblem's clear rail.
   ctx.globalAlpha=.45;pagoda(width*.75,height*.77,11);ctx.globalAlpha=1;
   gate(width*.84,height*.94);pagoda(width*.95,height*.94,22);
-  lantern(width*.89,height*.96,t,0);lantern(width*.99,height*.96,t,2);
+  lantern(width*.89,height*.96,t,0,open);lantern(width*.99,height*.96,t,2,open);
   // Dark water and short broken reflections, rather than a bright decorative stripe.
   const waterY=Math.round(height*.965);rect(width*.68,waterY,width*.32,height-waterY,'#17151b');
   for(let i=0;i<8;i++){
@@ -65,11 +84,12 @@ export function startAmbient(){
   }
  }
  function draw(now){
-  const t=motion.matches?0:(now-origin)/1000;
+  const t=motion.matches?0:(now-origin)/1000,state=effect.sample(now,motion.matches);
+  if(trigger){trigger.setAttribute('aria-busy',String(state.busy));trigger.dataset.phase=state.busy?'revealing':'idle';trigger.setAttribute('aria-label',motion.matches&&state.open?'Restore eclipse':'Reveal the crimson moon');}
   rect(0,0,width,height,'#111113');
-  eclipse(t);
+  eclipse(t,state);
   ridge(height*.64,1.3,'#17161a');ridge(height*.81,3.1,'#1a171d');ridge(height*.95,5.1,'#1d191f');
-  valley(t);fog(t);
+  valley(t,state.open);fog(t);
   for(let i=0;i<particles.length;i++){
    const p=particles[i],x=(p.x*width+t*p.speed*2)%(width+12)-6,y=p.y*height+Math.sin(t*.23+p.phase)*10;
    if(x<65&&y>height*.63)continue;
@@ -80,6 +100,24 @@ export function startAmbient(){
  }
  function tick(now){frame=0;if(document.hidden||motion.matches)return;if(now-last>=1000/24){draw(now);last=now;}frame=requestAnimationFrame(tick);}
  function refresh(){cancelAnimationFrame(frame);frame=0;if(document.hidden)return;draw(performance.now());if(!motion.matches)frame=requestAnimationFrame(tick);}
- function resize(){width=Math.ceil(innerWidth/3);height=Math.ceil(innerHeight/3);canvas.width=width;canvas.height=height;refresh();}
- document.addEventListener('visibilitychange',refresh);motion.addEventListener('change',refresh);window.addEventListener('resize',resize,{passive:true});window.addEventListener('pagehide',()=>cancelAnimationFrame(frame),{once:true});resize();
+ function updateHitArea(){
+  if(!trigger)return;
+  const {r,x,y}=geometry(),sx=innerWidth/width,sy=innerHeight/height,edge=(r+5)*2;
+  const left=(x-edge/2)*sx,top=(y-edge/2)*sy,w=edge*sx,h=edge*sy;
+  Object.assign(trigger.style,{left:left+'px',top:top+'px',width:w+'px',height:h+'px'});
+  const blocked=[...document.querySelectorAll('.results,.sidebar-panel')].some(el=>{const b=el.getBoundingClientRect();return left<b.right&&left+w>b.left&&top<b.bottom&&top+h>b.top;});
+  trigger.disabled=blocked;trigger.style.pointerEvents=blocked?'none':'auto';
+  if(blocked)effect.setHovered(false);
+ }
+ function resize(){width=Math.ceil(innerWidth/3);height=Math.ceil(innerHeight/3);canvas.width=width;canvas.height=height;updateHitArea();refresh();}
+ trigger?.addEventListener('pointerenter',()=>{effect.setHovered(true);if(motion.matches)refresh();});
+ trigger?.addEventListener('pointerleave',()=>{effect.setHovered(false);if(motion.matches)refresh();});
+ trigger?.addEventListener('focus',()=>{effect.setHovered(true);if(motion.matches)refresh();});
+ trigger?.addEventListener('blur',()=>{effect.setHovered(false);if(motion.matches)refresh();});
+ trigger?.addEventListener('pointermove',ev=>{const b=trigger.getBoundingClientRect();lightAngle=Math.atan2(ev.clientY-b.y-b.height/2,ev.clientX-b.x-b.width/2);});
+ trigger?.addEventListener('click',()=>{if(effect.activate(performance.now(),motion.matches))refresh();});
+ document.addEventListener('scroll',updateHitArea,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)effect.reset();updateHitArea();refresh();});
+ motion.addEventListener('change',()=>{effect.reset();refresh();});
+ window.addEventListener('resize',resize,{passive:true});window.addEventListener('pagehide',()=>cancelAnimationFrame(frame),{once:true});resize();
 }

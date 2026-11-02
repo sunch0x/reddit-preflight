@@ -37,3 +37,6 @@ Local Chromium verified the Manage list dialog opens and closes, no footer or he
 
 ## Ambient world (0.4.0)
 Browser fixture verifies the fixed emblem does not move during scroll or overlap the content rail, canvas is bounded to one third viewport resolution, and prefers-reduced-motion produces zero canvas draws during a subsequent observation window and no emblem CSS animation.
+
+## Eclipse interaction (0.5.0)
+Four state-machine tests cover a complete bounded cycle, repeat-click rejection, static reduced-motion toggles and reset. Local Chromium exercises a real pointer click and restoration, plus static reduced-motion behavior.

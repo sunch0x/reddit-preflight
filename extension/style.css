@@ -32,3 +32,5 @@ body{background:#111113}#ambient-world{position:fixed;inset:0;width:100%;height:
 .creator-emblem{left:24px;width:108px;height:120px}@media(max-width:1200px){.creator-emblem{left:15px;width:62px;height:74px}}@media(max-width:900px){.creator-emblem{left:12px;width:46px;height:57px}}@media(max-width:760px){.creator-emblem{left:8px;width:30px;height:39px}}
 
 .creator-emblem{left:28px;width:80px;height:90px}@media(max-width:1200px){.creator-emblem{left:19px;width:46px;height:55px}}@media(max-width:900px){.creator-emblem{left:16px;width:34px;height:43px}}@media(max-width:760px){.creator-emblem{left:11px;width:23px;height:30px}}
+
+.eclipse-trigger{position:fixed;z-index:3;display:block;border:0;border-radius:50%;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}.eclipse-trigger:focus-visible{outline:1px solid #c96d5c;outline-offset:3px}.eclipse-trigger:disabled{opacity:1;cursor:default}
