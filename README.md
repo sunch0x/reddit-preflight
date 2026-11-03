@@ -16,7 +16,7 @@ An independent tool by [sunch0x](https://linkdeck.co/sunch0x).
 - **Collect & check**: scroll an open Reddit Communities search, collect names, then start checking
 - Inspect visible account-age / karma gates, approval requests, sign-in prompts and browser challenges
 - Reuse one checker-owned tab; no additional delay between completed checks
-- Pause, resume, retry uncertain results and make your own manual marks
+- Pause, resume and retry uncertain results
 - Export an HTML report, CSV or a restorable JSON backup
 - Recognize the current account when Reddit exposes an explicit account-menu identifier
 

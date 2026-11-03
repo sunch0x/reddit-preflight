@@ -4,7 +4,7 @@ import {LABELS,REASONS,escapeHTML as e,parseCommunities,exportCSV,exportHTML,val
 import {collectSnapshot} from './snapshot.js';import {Scanner} from './scanner.js';
 import {Collector} from './collector.js';import {readSearchPage} from './search-page.js';
 const $=id=>document.getElementById(id),KEY='reddit-preflight-v2';
-let state,scanner,collector,collecting=false,collectionCancelled=false,version=0,lastTable='',menu='',lastCounts={},lastActivity=null;
+let state,scanner,collector,collecting=false,collectionCancelled=false,version=0,lastTable='',lastCounts={},lastActivity=null;
 const say=s=>{$('message').textContent=s;};
 const save=()=>chrome.storage.local.set({[KEY]:state});
 const changed=()=>{version++;draw();};
@@ -27,11 +27,11 @@ function draw(){
  $('account-label').textContent=state.account?'Checking as u/'+state.account:'Uses your Reddit session';
  $('account-pill').title=state.account?'Last explicitly identified account. Individual rows retain their own detected identity.':'No extra login. The account is displayed only when Reddit exposes it in the account menu.';
  $('local-label').textContent=collecting?'Collecting search results / saved locally':running?'Checking one tab / saved locally':state.runState==='done'?'Report ready / saved locally':'Saved only in this browser';
- const key=[version,$('search').value,$('filter').value,menu,running].join('|');if(lastTable===key)return;lastTable=key;
+ const key=[version,$('search').value,$('filter').value,running].join('|');if(lastTable===key)return;lastTable=key;
  const search=$('search').value.toLowerCase(),filter=$('filter').value;
  const rows=state.rows.filter(r=>(!filter||r.status===filter)&&[r.name,r.evidence,r.note,REASONS[r.reason],LABELS[r.status]].join(' ').toLowerCase().includes(search));
  $('no-matches').hidden=!total||Boolean(rows.length);
- $('rows').innerHTML=rows.map(r=>'<tr><td><a href="https://www.reddit.com/r/'+e(r.name)+'/" target="_blank" rel="noopener noreferrer">r/'+e(r.name)+'</a><small>'+e(r.account?'u/'+r.account:r.checkedAt?'Account not identified':'Not checked yet')+'</small></td><td><span class="badge '+e(r.status)+'">'+e(LABELS[r.status])+'</span><small>'+e(r.checkedAt?new Date(r.checkedAt).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'}):'')+'</small></td><td>'+(r.reason?'<strong>'+e(REASONS[r.reason]||r.reason)+'</strong><br>':'')+e(r.evidence||r.note||'Waiting for its turn')+(r.note&&r.evidence?'<br>'+e(r.note):'')+'</td><td><div class="row-action"><button aria-label="Actions for r/'+e(r.name)+'" aria-expanded="'+(menu===r.name)+'" data-menu="'+e(r.name)+'" '+(running?'disabled':'')+'>⋯</button>'+(menu===r.name?'<div class="row-menu"><button data-action="pending" data-name="'+e(r.name)+'">Check again</button><button data-action="user_confirmed" data-name="'+e(r.name)+'">Mark confirmed</button><button data-action="manual_bad" data-name="'+e(r.name)+'">Mark excluded</button><button data-action="remove" data-name="'+e(r.name)+'">Remove from list</button></div>':'')+'</div></td></tr>').join('');
+ $('rows').innerHTML=rows.map(r=>'<tr><td><a href="https://www.reddit.com/r/'+e(r.name)+'/" target="_blank" rel="noopener noreferrer">r/'+e(r.name)+'</a><small>'+e(r.account?'u/'+r.account:r.checkedAt?'Account not identified':'Not checked yet')+'</small></td><td><span class="badge '+e(r.status)+'">'+e(LABELS[r.status])+'</span><small>'+e(r.checkedAt?new Date(r.checkedAt).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'}):'')+'</small></td><td>'+(r.reason?'<strong>'+e(REASONS[r.reason]||r.reason)+'</strong><br>':'')+e(r.evidence||r.note||'Waiting for its turn')+(r.note&&r.evidence?'<br>'+e(r.note):'')+'</td></tr>').join('');
 }
 async function confirmAction(title,description,action){
  const dialog=$('confirm-dialog');$('confirm-title').textContent=title;$('confirm-description').textContent=description;$('confirm-action').textContent=action;dialog.returnValue='';dialog.showModal();
@@ -104,15 +104,6 @@ async function init(){
  $('search').oninput=draw;$('filter').onchange=draw;
  $('view').onclick=()=>{if(state.workerTabId)chrome.tabs.update(state.workerTabId,{active:true}).catch(()=>say('The scanning tab is no longer open'));};
  $('close').onclick=()=>scanner.closeTab();
- $('rows').onclick=async ev=>{
-  const target=ev.target.closest('button');if(!target||scanner.running||collecting)return;
-  if(target.dataset.menu){menu=menu===target.dataset.menu?'':target.dataset.menu;draw();return;}
-  const name=target.dataset.name,action=target.dataset.action,r=state.rows.find(r=>r.name===name);if(!r)return;menu='';
-  if(action==='remove'){state.rows=state.rows.filter(row=>row!==r);}
-  else Object.assign(r,{status:action,evidence:action==='pending'?'':'Manually marked by the user; not an automated eligibility check.',reason:'',checkedAt:action==='pending'?'':new Date().toISOString(),account:''});
-  await save();changed();
- };
- document.addEventListener('click',ev=>{if(menu&&!ev.target.closest('.row-action')){menu='';draw();}});
  $('retry').onclick=async()=>{for(const r of state.rows)if(['unknown','login','rate_limit','challenge'].includes(r.status))r.status='pending';await save();changed();say('Uncertain results are back in the queue');};
  $('recheck').onclick=async()=>{
   if(!await confirmAction('Recheck your list?','Previous observations and manual marks will be reset. Export a report first if you want to keep them. This is also required after changing Reddit accounts.','Recheck all'))return;
