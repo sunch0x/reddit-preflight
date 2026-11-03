@@ -2,55 +2,44 @@
 
 # Reddit Preflight
 
-**Check the community before you write the post.**
+Check Reddit communities before spending time on a post.
 
-A small, local Chrome extension that visits your community list in one reusable tab and records visible posting restrictions using your existing Reddit session.
+Paste a list of subreddits, or collect them from Reddit search. Preflight visits each community in one reusable browser tab and records visible posting restrictions for your current Reddit session.
 
-![Reddit Preflight dashboard](docs/assets/dashboard.png)
+**Free and open source. Runs in Chrome. No extra account, API key or AI subscription.**
 
-Dashboard with an example community list, before a scan. No sample eligibility results are prefilled.
+Built by [sunch0x](https://linkdeck.co/sunch0x).
 
-An independent tool by [sunch0x](https://linkdeck.co/sunch0x).
+## Interface
 
-## What it does
+![Reddit Preflight dashboard with five communities waiting to be checked](docs/assets/dashboard.png)
 
-- Paste subreddit names or links, or import a plain-text list
-- **Collect & check**: scroll an open Reddit Communities search, collect names, then start checking
-- Inspect visible account-age / karma gates, approval requests, sign-in prompts and browser challenges
-- Reuse one checker-owned tab; no additional delay between completed checks
-- Pause, resume and retry uncertain results
-- Export an HTML report, CSV or a restorable JSON backup
-- Recognize the current account when Reddit exposes an explicit account-menu identifier
+Current local 0.8.2 interface, shown before a scan with an example list. The published release is still 0.5.6; this screenshot previews the updated build. No eligibility results are prefilled.
 
-**It does not post, fill in content, join, vote or send messages.** No server, extra account, API key or AI subscription is needed.
+## What it checks
 
-## Install in Chrome
+- Visible account-age and karma requirements
+- Moderator approval and unavailable communities
+- Sign-in requests, rate limits and browser challenges
+- Whether an editable title and text field appear
 
-This is an unpacked developer extension, not a Chrome Web Store listing.
+**An available form does not guarantee that Reddit will accept your post.** Hidden filters and later moderation decisions are outside the check.
 
-1. Download the ZIP from [Releases](https://github.com/sunch0x/reddit-preflight/releases) and extract it, or clone this repository
-2. Open `chrome://extensions` in the same Chrome profile you use for Reddit
-3. Enable **Developer mode**
-4. Click **Load unpacked** and select the extracted release folder, or the repository's **extension** folder
-5. Click **Reddit Preflight** in Chrome's extensions menu
+Preflight never submits posts, fills a Reddit draft, joins communities, votes or sends messages.
 
-Sign in to Reddit normally before starting. You do not enter your username or password in Preflight.
+## Get started
 
-## Collect & check
+1. Download and extract the ZIP from [Releases](https://github.com/sunch0x/reddit-preflight/releases), or clone this repository
+2. Open `chrome://extensions` in the Chrome profile you use for Reddit
+3. Turn on **Developer mode** and click **Load unpacked**
+4. Select the extracted extension folder, or `extension/` inside the cloned repository
+5. Open Reddit Preflight from the extensions menu
 
-1. Open a Reddit search and select the **Communities** results tab
-2. Click the extension icon while on that page, or select its tab under **From Reddit search**
-3. Click **Collect & check**
+Sign in to Reddit normally. You never enter your Reddit password in Preflight.
 
-Preflight reads community links from the results pane, scrolls it, deduplicates names and saves each batch locally. Once the loaded results stop growing at the bottom, it automatically checks pending communities. Existing observations are preserved, so already checked communities are not rechecked.
+### Paste a list
 
-The search tab stays open. The form checker uses its own reusable tab. Stop the operation with **Pause**; collected names remain in your list and the checks do not start after a manual stop. If search navigation changes, a challenge appears or collection stalls, it stops and keeps the partial list for review.
-
-This collects what Reddit loads for that specific search, not every subreddit on Reddit. Limits: 1,000 communities per list, a two-minute collection window, and a stop when the loaded results remain unchanged. After a partial collection, you can continue collecting from the same search or start checks yourself.
-
-## Use it
-
-Paste a list such as:
+Add community names or Reddit links, then click **Add to list** and **Start checking**. You can also import a `.txt` file.
 
 ```text
 r/socialmedia
@@ -58,38 +47,40 @@ r/content_marketing
 https://www.reddit.com/r/creators/
 ```
 
-Click **Add to list**, then **Start checking**. Keep the dashboard open. Checks are sequential; page loading and form rendering still take time. Closing the dashboard stops active work, and saved progress can be resumed.
+### Collect from search
 
-If Reddit requests sign-in, rate-limits the session or shows a browser challenge, Preflight pauses. It does not bypass these checks. After resolving them yourself, use **Retry uncertain results**. If the detected Reddit account changed, use **Recheck all / changed Reddit account** instead.
+Open a Reddit search and choose its **Communities** tab. In Preflight, select that search tab and click **Collect & check**.
 
-At completion, export a report. Downloaded reports include every row, including pending or uncertain ones. Only the checker-owned tab is closed; a tab you navigated elsewhere is left alone.
+Preflight scrolls the loaded results, removes duplicate names and checks the collected list. Existing checked entries are preserved. It collects what Reddit loads for that search, not every community on Reddit.
 
-## Understand the results
+## Review and export
 
-| Observation | Meaning |
-|---|---|
-| Form opens | An editable title and body appeared on two consecutive observations. **This is not permission to publish.** |
-| Account requirement | A visible account-activity gate was detected; age and karma are distinguished when the message states them |
-| Approval required | Reddit displayed a private-community or posting-approval requirement |
-| Community unavailable | Reddit displayed an unavailable-community message |
-| Needs review | The page could not be interpreted conclusively within the observation window |
-| Sign in / browser check / rate limited | The scan paused so you can inspect the current tab |
-| Account changed | Two different explicitly identified accounts were observed; the scan paused |
-| Manually confirmed / excluded | Your own mark, distinct from the automated observation |
+Search or filter the results, open the details behind an observation, and export a CSV, HTML report or JSON backup.
 
-## Important limitations
+Checks run sequentially in one reusable tab. Keep the dashboard open while scanning. Pause whenever you need to. If Reddit asks you to sign in, rate-limits the session or shows a challenge, the scan pauses rather than bypassing it.
 
-Reddit can render a composer before checking eligibility, and some restrictions appear only after a submission attempt. AutoModerator and moderators may apply hidden rules or remove content later. An open composer does not prove that your account meets every requirement, and this tool never submits a test post to find out.
+Use the retry and recheck controls after resolving a problem or switching accounts. Never treat checks from another Reddit account as your own eligibility results.
 
-This is **not** a hidden-karma-threshold detector, a shadowban checker, a moderation-policy checker or a guarantee that promotional posts are allowed. It reports visible UI observations only. Late dialogs, UI changes, unsupported locales, closed shadow roots or slow pages can produce missed or uncertain results. English and common Russian blocking phrases are currently recognized; the interface and exports are English.
+## Updated local build
 
-Account detection is opportunistic. It does not guess your identity from post authors or arbitrary profile links. If no explicit account-menu identifier is available, the account stays unidentified. Never combine checks from different Reddit accounts; recheck after switching.
+The local 0.8.2 build also includes:
 
-Automated tests cover classification, delayed visible gates, queue behavior, local exports and ownership of the reusable tab. They do not establish compatibility with every live Reddit layout or account. Reports are observations tied to a time and account, not permanent eligibility records.
+- Collection of visible community rules with source links
+- **Check a draft:** compare your text against explicit collected requirements
+- **Posting history:** manually record post links and outcomes
+- A compact settings menu, download menu and separate list deletion
 
-## Local development
+These additions have local automated and browser-fixture coverage, but are not yet included in the published 0.5.6 release or the current GitHub source. Live Reddit behavior can differ from fixtures.
 
-Node.js 20.11+ and the system `zip` command are sufficient. No npm dependencies are installed.
+## Privacy
+
+Lists, observations and backups stay in your browser or files you export. No results are uploaded to a Preflight server. The extension uses your existing Reddit session and requests access to `www.reddit.com`.
+
+See [PRIVACY.md](PRIVACY.md) for details. This independent project is not affiliated with Reddit.
+
+## Development
+
+Node.js 20.11+ and the system `zip` command are sufficient. No npm dependencies are required.
 
 ```sh
 npm test
@@ -97,12 +88,6 @@ npm run check
 npm run package
 ```
 
-Load `extension/` unpacked in Chrome. After changing extension files, click its reload button on `chrome://extensions`, then reopen the dashboard.
+Load `extension/` unpacked. After an update, reload the extension on `chrome://extensions` and reload its dashboard.
 
-The extension starts with an empty list. The optional sample list contains only public community names with no prefilled results. Personal reports and browser state are not included in the repository or release package.
-
-## Privacy and license
-
-See [PRIVACY.md](PRIVACY.md). Runtime code and assets are local; no results are uploaded. Creator and product links are regular links, not trackers.
-
-MIT licensed. This independent project is not affiliated with or endorsed by Reddit.
+MIT licensed.
