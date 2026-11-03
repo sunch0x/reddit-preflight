@@ -1,3 +1,5 @@
+![Reddit Preflight](docs/assets/project-banner.png)
+
 # Reddit Preflight
 
 **Check the community before you write the post.**
